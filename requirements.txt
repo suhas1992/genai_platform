@@ -1,0 +1,9 @@
+# Core dependencies for GenAI Platform SDK
+grpcio>=1.60.0
+grpcio-tools>=1.60.0
+protobuf>=4.25.0
+
+# Development dependencies (optional)
+# Install with: pip install -r requirements-dev.txt
+# Or use: pip install -e ".[dev]"
+

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+
+// Session Service Protocol Buffer definitions
+
+service SessionService {
+  // Get existing session or create a new one
+  rpc GetOrCreateSession(GetOrCreateSessionRequest) returns (Session);
+}
+
+message GetOrCreateSessionRequest {
+  string user_id = 1;
+  string session_id = 2;  // Optional, empty string if not provided
+}
+
+message Session {
+  string session_id = 1;
+  string user_id = 2;
+  int64 created_at = 3;
+  int64 updated_at = 4;
+}
+
