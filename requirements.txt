@@ -2,6 +2,8 @@
 grpcio>=1.60.0
 grpcio-tools>=1.60.0
 protobuf>=4.25.0
+openai
+anthropic
 
 # Development dependencies (optional)
 # Install with: pip install -r requirements-dev.txt

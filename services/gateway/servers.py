@@ -6,9 +6,10 @@ from http.server import HTTPServer
 from concurrent import futures
 import grpc
 
+from proto import models_pb2_grpc
 from proto import sessions_pb2_grpc
 from services.gateway.registry import ServiceRegistry
-from services.gateway.grpc_proxy import GenericProxy, SessionServiceProxy
+from services.gateway.grpc_proxy import GenericProxy, SessionServiceProxy, ModelServiceProxy
 from services.gateway.http_handler import WorkflowHTTPHandler
 
 
@@ -32,6 +33,10 @@ def create_grpc_server(registry: ServiceRegistry, port: int = 50051):
     # Each handler is minimal - just reads metadata and forwards
     sessions_pb2_grpc.add_SessionServiceServicer_to_server(
         SessionServiceProxy(proxy),
+        server
+    )
+    models_pb2_grpc.add_ModelServiceServicer_to_server(
+        ModelServiceProxy(proxy),
         server
     )
     
