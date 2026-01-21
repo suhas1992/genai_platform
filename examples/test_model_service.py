@@ -22,7 +22,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from genai_platform import GenAIPlatform
-from services.sessions.main import main as start_session_service
 from services.models.main import main as start_model_service
 from services.gateway.main import main as start_gateway
 
@@ -167,8 +166,6 @@ def main():
     print("\nStarting services...")
     
     # Start services
-    start_service_in_thread(start_session_service, "SessionService")
-    time.sleep(2)
     start_service_in_thread(start_model_service, "ModelService")
     time.sleep(2)
     start_service_in_thread(start_gateway, "Gateway")
