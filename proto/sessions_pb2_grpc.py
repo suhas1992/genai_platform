@@ -39,7 +39,42 @@ class SessionServiceStub(object):
         self.GetOrCreateSession = channel.unary_unary(
                 '/proto.SessionService/GetOrCreateSession',
                 request_serializer=sessions__pb2.GetOrCreateSessionRequest.SerializeToString,
-                response_deserializer=sessions__pb2.Session.FromString,
+                response_deserializer=sessions__pb2.GetOrCreateSessionResponse.FromString,
+                _registered_method=True)
+        self.AddMessages = channel.unary_unary(
+                '/proto.SessionService/AddMessages',
+                request_serializer=sessions__pb2.AddMessagesRequest.SerializeToString,
+                response_deserializer=sessions__pb2.AddMessagesResponse.FromString,
+                _registered_method=True)
+        self.GetMessages = channel.unary_unary(
+                '/proto.SessionService/GetMessages',
+                request_serializer=sessions__pb2.GetMessagesRequest.SerializeToString,
+                response_deserializer=sessions__pb2.GetMessagesResponse.FromString,
+                _registered_method=True)
+        self.DeleteSession = channel.unary_unary(
+                '/proto.SessionService/DeleteSession',
+                request_serializer=sessions__pb2.DeleteSessionRequest.SerializeToString,
+                response_deserializer=sessions__pb2.DeleteSessionResponse.FromString,
+                _registered_method=True)
+        self.SaveMemory = channel.unary_unary(
+                '/proto.SessionService/SaveMemory',
+                request_serializer=sessions__pb2.SaveMemoryRequest.SerializeToString,
+                response_deserializer=sessions__pb2.SaveMemoryResponse.FromString,
+                _registered_method=True)
+        self.GetMemory = channel.unary_unary(
+                '/proto.SessionService/GetMemory',
+                request_serializer=sessions__pb2.GetMemoryRequest.SerializeToString,
+                response_deserializer=sessions__pb2.GetMemoryResponse.FromString,
+                _registered_method=True)
+        self.DeleteMemory = channel.unary_unary(
+                '/proto.SessionService/DeleteMemory',
+                request_serializer=sessions__pb2.DeleteMemoryRequest.SerializeToString,
+                response_deserializer=sessions__pb2.DeleteMemoryResponse.FromString,
+                _registered_method=True)
+        self.ClearUserMemory = channel.unary_unary(
+                '/proto.SessionService/ClearUserMemory',
+                request_serializer=sessions__pb2.ClearUserMemoryRequest.SerializeToString,
+                response_deserializer=sessions__pb2.ClearUserMemoryResponse.FromString,
                 _registered_method=True)
 
 
@@ -55,13 +90,97 @@ class SessionServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AddMessages(self, request, context):
+        """Add messages to a session
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMessages(self, request, context):
+        """Get messages from a session
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteSession(self, request, context):
+        """Delete a session
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SaveMemory(self, request, context):
+        """Save memory entry
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMemory(self, request, context):
+        """Get memory entries
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteMemory(self, request, context):
+        """Delete a memory entry
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ClearUserMemory(self, request, context):
+        """Clear all memories for a user
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SessionServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetOrCreateSession': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOrCreateSession,
                     request_deserializer=sessions__pb2.GetOrCreateSessionRequest.FromString,
-                    response_serializer=sessions__pb2.Session.SerializeToString,
+                    response_serializer=sessions__pb2.GetOrCreateSessionResponse.SerializeToString,
+            ),
+            'AddMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddMessages,
+                    request_deserializer=sessions__pb2.AddMessagesRequest.FromString,
+                    response_serializer=sessions__pb2.AddMessagesResponse.SerializeToString,
+            ),
+            'GetMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMessages,
+                    request_deserializer=sessions__pb2.GetMessagesRequest.FromString,
+                    response_serializer=sessions__pb2.GetMessagesResponse.SerializeToString,
+            ),
+            'DeleteSession': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteSession,
+                    request_deserializer=sessions__pb2.DeleteSessionRequest.FromString,
+                    response_serializer=sessions__pb2.DeleteSessionResponse.SerializeToString,
+            ),
+            'SaveMemory': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveMemory,
+                    request_deserializer=sessions__pb2.SaveMemoryRequest.FromString,
+                    response_serializer=sessions__pb2.SaveMemoryResponse.SerializeToString,
+            ),
+            'GetMemory': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMemory,
+                    request_deserializer=sessions__pb2.GetMemoryRequest.FromString,
+                    response_serializer=sessions__pb2.GetMemoryResponse.SerializeToString,
+            ),
+            'DeleteMemory': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteMemory,
+                    request_deserializer=sessions__pb2.DeleteMemoryRequest.FromString,
+                    response_serializer=sessions__pb2.DeleteMemoryResponse.SerializeToString,
+            ),
+            'ClearUserMemory': grpc.unary_unary_rpc_method_handler(
+                    servicer.ClearUserMemory,
+                    request_deserializer=sessions__pb2.ClearUserMemoryRequest.FromString,
+                    response_serializer=sessions__pb2.ClearUserMemoryResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -92,7 +211,196 @@ class SessionService(object):
             target,
             '/proto.SessionService/GetOrCreateSession',
             sessions__pb2.GetOrCreateSessionRequest.SerializeToString,
-            sessions__pb2.Session.FromString,
+            sessions__pb2.GetOrCreateSessionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AddMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/AddMessages',
+            sessions__pb2.AddMessagesRequest.SerializeToString,
+            sessions__pb2.AddMessagesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/GetMessages',
+            sessions__pb2.GetMessagesRequest.SerializeToString,
+            sessions__pb2.GetMessagesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteSession(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/DeleteSession',
+            sessions__pb2.DeleteSessionRequest.SerializeToString,
+            sessions__pb2.DeleteSessionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SaveMemory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/SaveMemory',
+            sessions__pb2.SaveMemoryRequest.SerializeToString,
+            sessions__pb2.SaveMemoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMemory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/GetMemory',
+            sessions__pb2.GetMemoryRequest.SerializeToString,
+            sessions__pb2.GetMemoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteMemory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/DeleteMemory',
+            sessions__pb2.DeleteMemoryRequest.SerializeToString,
+            sessions__pb2.DeleteMemoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ClearUserMemory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/proto.SessionService/ClearUserMemory',
+            sessions__pb2.ClearUserMemoryRequest.SerializeToString,
+            sessions__pb2.ClearUserMemoryResponse.FromString,
             options,
             channel_credentials,
             insecure,

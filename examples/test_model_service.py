@@ -22,7 +22,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from genai_platform import GenAIPlatform
-from proto import models_pb2
 from services.sessions.main import main as start_session_service
 from services.models.main import main as start_model_service
 from services.gateway.main import main as start_gateway
@@ -48,24 +47,22 @@ def test_discovery(platform: GenAIPlatform):
     print("="*60)
     
     # List all available models
-    response = platform.models.list_models()
-    print(f"\nAvailable models: {len(response.models)}")
-    for model in response.models:
-        print(f"  - {model.name} ({model.provider})")
-        print(f"    Context: {model.capabilities.context_window}")
-        print(f"    Vision: {model.capabilities.supports_vision}")
-        print(f"    Tools: {model.capabilities.supports_tools}")
+    models = platform.models.list_models()
+    print(f"\nAvailable models: {len(models)}")
+    for model in models:
+        print(f"  - {model['name']} ({model['provider']})")
+        print(f"    Context: {model['capabilities']['context_window']}")
+        print(f"    Vision: {model['capabilities']['supports_vision']}")
+        print(f"    Tools: {model['capabilities']['supports_tools']}")
     
     # Get capabilities for specific model
-    if response.models:
-        model_name = response.models[0].name
-        caps_response = platform.models.get_model_capabilities(
-            models_pb2.GetCapabilitiesRequest(model=model_name)
-        )
+    if models:
+        model_name = models[0]['name']
+        caps = platform.models.get_model_capabilities(model_name)
         print(f"\nCapabilities for {model_name}:")
-        print(f"  Context window: {caps_response.context_window}")
-        print(f"  Vision: {caps_response.supports_vision}")
-        print(f"  Tools: {caps_response.supports_tools}")
+        print(f"  Context window: {caps['context_window']}")
+        print(f"  Vision: {caps['supports_vision']}")
+        print(f"  Tools: {caps['supports_tools']}")
 
 
 def test_chat(platform: GenAIPlatform, model: str, prompt: str):
@@ -73,24 +70,18 @@ def test_chat(platform: GenAIPlatform, model: str, prompt: str):
     print(f"\n[Chat] Model: {model}")
     print(f"Prompt: {prompt}")
     
-    request = models_pb2.ChatRequest(
+    response = platform.models.chat(
         model=model,
-        messages=[
-            models_pb2.ChatMessage(role="user", content=prompt),
-        ],
-        config=models_pb2.ChatConfig(
-            temperature=0.7,
-            max_tokens=150,
-            top_p=1.0,
-        ),
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7,
+        max_tokens=150
     )
     
-    response = platform.models.chat(request)
-    print(f"Response: {response.text}")
-    print(f"Tokens: {response.usage.total_tokens} "
-          f"(prompt: {response.usage.prompt_tokens}, "
-          f"completion: {response.usage.completion_tokens})")
-    print(f"Finish reason: {response.finish_reason}")
+    print(f"Response: {response['text']}")
+    print(f"Tokens: {response['usage']['total_tokens']} "
+          f"(prompt: {response['usage']['prompt_tokens']}, "
+          f"completion: {response['usage']['completion_tokens']})")
+    print(f"Finish reason: {response['finish_reason']}")
 
 
 def test_streaming(platform: GenAIPlatform, model: str):
@@ -98,27 +89,15 @@ def test_streaming(platform: GenAIPlatform, model: str):
     print(f"\n[Streaming] Model: {model}")
     print("Streaming response: ", end="", flush=True)
     
-    request = models_pb2.ChatRequest(
+    for token in platform.models.chat_stream(
         model=model,
-        messages=[
-            models_pb2.ChatMessage(
-                role="user",
-                content="Count from 1 to 5, one number per line.",
-            ),
-        ],
-        config=models_pb2.ChatConfig(
-            temperature=0.7,
-            max_tokens=50,
-        ),
-    )
+        messages=[{"role": "user", "content": "Count from 1 to 5, one number per line."}],
+        temperature=0.7,
+        max_tokens=50
+    ):
+        print(token, end="", flush=True)
     
-    for chunk in platform.models.chat_stream(request):
-        if chunk.token:
-            print(chunk.token, end="", flush=True)
-        if chunk.finish_reason:
-            print(f"\n[Finish: {chunk.finish_reason}]")
-            if chunk.usage:
-                print(f"Tokens: {chunk.usage.total_tokens}")
+    print()
 
 
 def test_prompts(platform: GenAIPlatform):
@@ -128,47 +107,24 @@ def test_prompts(platform: GenAIPlatform):
     print("="*60)
     
     # Register a prompt
-    register_response = platform.models.register_prompt(
-        models_pb2.RegisterPromptRequest(
-            name="patient-intake",
-            content="You are a helpful patient intake assistant for a medical clinic.",
-            metadata=models_pb2.PromptMetadata(
-                author="test@example.com",
-                reviewed_by="admin@example.com",
-                tags=["production", "medical"],
-            ),
-        )
+    result = platform.models.register_prompt(
+        name="patient-intake",
+        content="You are a helpful patient intake assistant for a medical clinic.",
+        author="test@example.com",
+        tags=["production", "medical"]
     )
-    print(f"\nRegistered prompt: {register_response.name} v{register_response.version}")
+    print(f"\nRegistered prompt: {result['name']} v{result['version']}")
     
     # Get the prompt
-    get_response = platform.models.get_prompt(
-        models_pb2.GetPromptRequest(name="patient-intake", version=0)
-    )
-    print(f"Retrieved: {get_response.name} v{get_response.version}")
-    print(f"Content: {get_response.content[:50]}...")
+    prompt = platform.models.get_prompt("patient-intake")
+    print(f"Retrieved: {prompt['name']} v{prompt['version']}")
+    print(f"Content: {prompt['content'][:50]}...")
     
     # List all prompts
-    list_response = platform.models.list_prompts()
-    print(f"\nAll prompts: {len(list_response.prompts)}")
-    for prompt in list_response.prompts:
-        print(f"  - {prompt.name} v{prompt.version}")
-    
-    # Use prompt in chat
-    print("\nUsing registered prompt in chat:")
-    request = models_pb2.ChatRequest(
-        model="gpt-4o",
-        system_prompt_name="patient-intake",
-        messages=[
-            models_pb2.ChatMessage(
-                role="user",
-                content="What information do I need to bring?",
-            ),
-        ],
-        config=models_pb2.ChatConfig(max_tokens=100),
-    )
-    response = platform.models.chat(request)
-    print(f"Response: {response.text[:100]}...")
+    prompts = platform.models.list_prompts()
+    print(f"\nAll prompts: {len(prompts)}")
+    for p in prompts:
+        print(f"  - {p['name']} v{p['version']}")
 
 
 def test_custom_models(platform: GenAIPlatform):
@@ -178,36 +134,30 @@ def test_custom_models(platform: GenAIPlatform):
     print("="*60)
     
     # Register a custom model
-    register_response = platform.models.register_model(
-        models_pb2.RegisterModelRequest(
-            name="my-llama-70b",
-            endpoint="http://localhost:8000/v1",
-            capabilities=models_pb2.ModelCapabilities(
-                context_window=8192,
-                supports_vision=False,
-                supports_tools=True,
-            ),
-            health_check="/health",
-            adapter_type="openai-compatible",
-        )
+    result = platform.models.register_model(
+        name="my-llama-70b",
+        endpoint="http://localhost:8000/v1",
+        adapter_type="openai-compatible",
+        context_window=8192,
+        supports_vision=False,
+        supports_tools=True,
+        health_check="/health"
     )
-    print(f"\nRegistered: {register_response.name}")
-    print(f"Status: {register_response.status}")
+    print(f"\nRegistered: {result['name']}")
+    print(f"Status: {result['status']}")
     
     # List registered models
-    list_response = platform.models.list_registered_models()
-    print(f"\nCustom models: {len(list_response.models)}")
-    for model in list_response.models:
-        print(f"  - {model.name} ({model.adapter_type})")
-        print(f"    Endpoint: {model.endpoint}")
+    models = platform.models.list_registered_models()
+    print(f"\nCustom models: {len(models)}")
+    for model in models:
+        print(f"  - {model['name']} ({model['adapter_type']})")
+        print(f"    Endpoint: {model['endpoint']}")
     
     # Get model status
-    status_response = platform.models.get_model_status(
-        models_pb2.GetModelStatusRequest(name="my-llama-70b")
-    )
-    print(f"\nStatus for {status_response.name}:")
-    print(f"  Status: {status_response.status}")
-    print(f"  Endpoint: {status_response.endpoint}")
+    status = platform.models.get_model_status("my-llama-70b")
+    print(f"\nStatus for {status['name']}:")
+    print(f"  Status: {status['status']}")
+    print(f"  Endpoint: {status['endpoint']}")
 
 
 def main():

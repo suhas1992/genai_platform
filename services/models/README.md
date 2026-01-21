@@ -100,16 +100,16 @@ python examples/test_model_service.py
 Providers are automatically configured when API keys are present.
 
 ### Custom Models
-Register self-hosted models via `RegisterModel`:
+Register self-hosted models via `register_model`:
 ```python
 platform.models.register_model(
-    models_pb2.RegisterModelRequest(
-        name="my-llama-70b",
-        endpoint="http://localhost:8000/v1",
-        capabilities=ModelCapabilities(...),
-        adapter_type="vllm",  # Which adapter: "openai", "anthropic", "vllm"
-        provider="Internal Llama",  # Optional display name
-    )
+    name="my-llama-70b",
+    endpoint="http://localhost:8000/v1",
+    adapter_type="vllm",  # Which adapter: "openai", "anthropic", "vllm"
+    context_window=8192,
+    supports_vision=False,
+    supports_tools=True,
+    provider="Internal Llama"  # Optional display name
 )
 ```
 
@@ -118,33 +118,26 @@ platform.models.register_model(
 ### Basic Chat
 ```python
 from genai_platform import GenAIPlatform
-from proto import models_pb2
 
 platform = GenAIPlatform()
 
-request = models_pb2.ChatRequest(
+response = platform.models.chat(
     model="gpt-4o",
-    messages=[
-        models_pb2.ChatMessage(role="user", content="Hello!"),
-    ],
+    messages=[{"role": "user", "content": "Hello!"}],
+    temperature=0.7,
+    max_tokens=150
 )
-
-response = platform.models.chat(request)
-print(response.text)
+print(response['text'])
 ```
 
 ### Streaming
 ```python
-request = models_pb2.ChatRequest(
+for token in platform.models.chat_stream(
     model="gpt-4o",
-    messages=[
-        models_pb2.ChatMessage(role="user", content="Count to 5"),
-    ],
-)
-
-for chunk in platform.models.chat_stream(request):
-    if chunk.token:
-        print(chunk.token, end="", flush=True)
+    messages=[{"role": "user", "content": "Count to 5"}],
+    temperature=0.7
+):
+    print(token, end="", flush=True)
 ```
 
 See `examples/quickstart_models.py` and `examples/test_model_service.py` for more.

@@ -32,7 +32,7 @@ class AnthropicProvider(ModelProvider):
         payload = {
             "model": model,
             "messages": [self._convert_message(message) for message in conversation],
-            "max_tokens": config.max_tokens,
+            "max_tokens": config.max_tokens if config.max_tokens > 0 else 4096,
             "stop_sequences": list(config.stop_sequences),
         }
         
@@ -78,7 +78,7 @@ class AnthropicProvider(ModelProvider):
         payload = {
             "model": model,
             "messages": [self._convert_message(message) for message in conversation],
-            "max_tokens": config.max_tokens,
+            "max_tokens": config.max_tokens if config.max_tokens > 0 else 4096,
             "stop_sequences": list(config.stop_sequences),
         }
         

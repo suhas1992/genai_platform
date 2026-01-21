@@ -24,17 +24,57 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0esessions.proto\x12\x05proto\"@\n\x19GetOrCreateSessionRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x12\n\nsession_id\x18\x02 \x01(\t\"V\n\x07Session\x12\x12\n\nsession_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x12\n\ncreated_at\x18\x03 \x01(\x03\x12\x12\n\nupdated_at\x18\x04 \x01(\x03\x32X\n\x0eSessionService\x12\x46\n\x12GetOrCreateSession\x12 .proto.GetOrCreateSessionRequest\x1a\x0e.proto.Sessionb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0esessions.proto\x12\x05proto\"T\n\x19GetOrCreateSessionRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x17\n\nsession_id\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\r\n\x0b_session_id\"i\n\x1aGetOrCreateSessionResponse\x12\x12\n\nsession_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x12\n\ncreated_at\x18\x03 \x01(\x03\x12\x12\n\nupdated_at\x18\x04 \x01(\x03\"J\n\x12\x41\x64\x64MessagesRequest\x12\x12\n\nsession_id\x18\x01 \x01(\t\x12 \n\x08messages\x18\x02 \x03(\x0b\x32\x0e.proto.Message\"=\n\x13\x41\x64\x64MessagesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rmessage_count\x18\x02 \x01(\x05\"\x8a\x01\n\x12GetMessagesRequest\x12\x12\n\nsession_id\x18\x01 \x01(\t\x12\x12\n\x05limit\x18\x02 \x01(\x05H\x00\x88\x01\x01\x12\x13\n\x06offset\x18\x03 \x01(\x05H\x01\x88\x01\x01\x12\x15\n\x08strategy\x18\x04 \x01(\tH\x02\x88\x01\x01\x42\x08\n\x06_limitB\t\n\x07_offsetB\x0b\n\t_strategy\"L\n\x13GetMessagesResponse\x12 \n\x08messages\x18\x01 \x03(\x0b\x32\x0e.proto.Message\x12\x13\n\x0btotal_count\x18\x02 \x01(\x05\"*\n\x14\x44\x65leteSessionRequest\x12\x12\n\nsession_id\x18\x01 \x01(\t\"(\n\x15\x44\x65leteSessionResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\xc0\x01\n\x07Message\x12\x0c\n\x04role\x18\x01 \x01(\t\x12\x14\n\x07\x63ontent\x18\x02 \x01(\tH\x00\x88\x01\x01\x12*\n\ntool_calls\x18\x03 \x03(\x0b\x32\x16.proto.MessageToolCall\x12\x19\n\x0ctool_call_id\x18\x04 \x01(\tH\x01\x88\x01\x01\x12\x11\n\x04name\x18\x05 \x01(\tH\x02\x88\x01\x01\x12\x11\n\ttimestamp\x18\x06 \x01(\x03\x42\n\n\x08_contentB\x0f\n\r_tool_call_idB\x07\n\x05_name\"2\n\x0fMessageFunction\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x11\n\targuments\x18\x02 \x01(\t\"U\n\x0fMessageToolCall\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12(\n\x08\x66unction\x18\x03 \x01(\x0b\x32\x16.proto.MessageFunction\"h\n\x11SaveMemoryRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\t\x12\x17\n\nsession_id\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\r\n\x0b_session_id\"%\n\x12SaveMemoryResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"e\n\x10GetMemoryRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x03key\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x17\n\nsession_id\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\x06\n\x04_keyB\r\n\x0b_session_id\"~\n\x11GetMemoryResponse\x12\x38\n\x08memories\x18\x01 \x03(\x0b\x32&.proto.GetMemoryResponse.MemoriesEntry\x1a/\n\rMemoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"[\n\x13\x44\x65leteMemoryRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x17\n\nsession_id\x18\x03 \x01(\tH\x00\x88\x01\x01\x42\r\n\x0b_session_id\"\'\n\x14\x44\x65leteMemoryResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\")\n\x16\x43learUserMemoryRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"(\n\x17\x43learUserMemoryResponse\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\"V\n\x07Session\x12\x12\n\nsession_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x12\n\ncreated_at\x18\x03 \x01(\x03\x12\x12\n\nupdated_at\x18\x04 \x01(\x03\x32\xe1\x04\n\x0eSessionService\x12Y\n\x12GetOrCreateSession\x12 .proto.GetOrCreateSessionRequest\x1a!.proto.GetOrCreateSessionResponse\x12\x44\n\x0b\x41\x64\x64Messages\x12\x19.proto.AddMessagesRequest\x1a\x1a.proto.AddMessagesResponse\x12\x44\n\x0bGetMessages\x12\x19.proto.GetMessagesRequest\x1a\x1a.proto.GetMessagesResponse\x12J\n\rDeleteSession\x12\x1b.proto.DeleteSessionRequest\x1a\x1c.proto.DeleteSessionResponse\x12\x41\n\nSaveMemory\x12\x18.proto.SaveMemoryRequest\x1a\x19.proto.SaveMemoryResponse\x12>\n\tGetMemory\x12\x17.proto.GetMemoryRequest\x1a\x18.proto.GetMemoryResponse\x12G\n\x0c\x44\x65leteMemory\x12\x1a.proto.DeleteMemoryRequest\x1a\x1b.proto.DeleteMemoryResponse\x12P\n\x0f\x43learUserMemory\x12\x1d.proto.ClearUserMemoryRequest\x1a\x1e.proto.ClearUserMemoryResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'sessions_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
+  _globals['_GETMEMORYRESPONSE_MEMORIESENTRY']._loaded_options = None
+  _globals['_GETMEMORYRESPONSE_MEMORIESENTRY']._serialized_options = b'8\001'
   _globals['_GETORCREATESESSIONREQUEST']._serialized_start=25
-  _globals['_GETORCREATESESSIONREQUEST']._serialized_end=89
-  _globals['_SESSION']._serialized_start=91
-  _globals['_SESSION']._serialized_end=177
-  _globals['_SESSIONSERVICE']._serialized_start=179
-  _globals['_SESSIONSERVICE']._serialized_end=267
+  _globals['_GETORCREATESESSIONREQUEST']._serialized_end=109
+  _globals['_GETORCREATESESSIONRESPONSE']._serialized_start=111
+  _globals['_GETORCREATESESSIONRESPONSE']._serialized_end=216
+  _globals['_ADDMESSAGESREQUEST']._serialized_start=218
+  _globals['_ADDMESSAGESREQUEST']._serialized_end=292
+  _globals['_ADDMESSAGESRESPONSE']._serialized_start=294
+  _globals['_ADDMESSAGESRESPONSE']._serialized_end=355
+  _globals['_GETMESSAGESREQUEST']._serialized_start=358
+  _globals['_GETMESSAGESREQUEST']._serialized_end=496
+  _globals['_GETMESSAGESRESPONSE']._serialized_start=498
+  _globals['_GETMESSAGESRESPONSE']._serialized_end=574
+  _globals['_DELETESESSIONREQUEST']._serialized_start=576
+  _globals['_DELETESESSIONREQUEST']._serialized_end=618
+  _globals['_DELETESESSIONRESPONSE']._serialized_start=620
+  _globals['_DELETESESSIONRESPONSE']._serialized_end=660
+  _globals['_MESSAGE']._serialized_start=663
+  _globals['_MESSAGE']._serialized_end=855
+  _globals['_MESSAGEFUNCTION']._serialized_start=857
+  _globals['_MESSAGEFUNCTION']._serialized_end=907
+  _globals['_MESSAGETOOLCALL']._serialized_start=909
+  _globals['_MESSAGETOOLCALL']._serialized_end=994
+  _globals['_SAVEMEMORYREQUEST']._serialized_start=996
+  _globals['_SAVEMEMORYREQUEST']._serialized_end=1100
+  _globals['_SAVEMEMORYRESPONSE']._serialized_start=1102
+  _globals['_SAVEMEMORYRESPONSE']._serialized_end=1139
+  _globals['_GETMEMORYREQUEST']._serialized_start=1141
+  _globals['_GETMEMORYREQUEST']._serialized_end=1242
+  _globals['_GETMEMORYRESPONSE']._serialized_start=1244
+  _globals['_GETMEMORYRESPONSE']._serialized_end=1370
+  _globals['_GETMEMORYRESPONSE_MEMORIESENTRY']._serialized_start=1323
+  _globals['_GETMEMORYRESPONSE_MEMORIESENTRY']._serialized_end=1370
+  _globals['_DELETEMEMORYREQUEST']._serialized_start=1372
+  _globals['_DELETEMEMORYREQUEST']._serialized_end=1463
+  _globals['_DELETEMEMORYRESPONSE']._serialized_start=1465
+  _globals['_DELETEMEMORYRESPONSE']._serialized_end=1504
+  _globals['_CLEARUSERMEMORYREQUEST']._serialized_start=1506
+  _globals['_CLEARUSERMEMORYREQUEST']._serialized_end=1547
+  _globals['_CLEARUSERMEMORYRESPONSE']._serialized_start=1549
+  _globals['_CLEARUSERMEMORYRESPONSE']._serialized_end=1589
+  _globals['_SESSION']._serialized_start=1591
+  _globals['_SESSION']._serialized_end=1677
+  _globals['_SESSIONSERVICE']._serialized_start=1680
+  _globals['_SESSIONSERVICE']._serialized_end=2289
 # @@protoc_insertion_point(module_scope)
