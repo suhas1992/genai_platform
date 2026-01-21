@@ -41,10 +41,12 @@ class OpenAIProvider(ModelProvider):
             "model": model,
             "messages": openai_messages,
             "temperature": config.temperature,
-            "max_tokens": config.max_tokens,
             "top_p": config.top_p,
             "stop": list(config.stop_sequences),
         }
+        # Only include max_tokens if explicitly set (> 0)
+        if config.max_tokens > 0:
+            payload["max_tokens"] = config.max_tokens
         if tools:
             payload["tools"] = [self._convert_tool(tool) for tool in tools]
         if response_format:
@@ -87,12 +89,14 @@ class OpenAIProvider(ModelProvider):
             "model": model,
             "messages": openai_messages,
             "temperature": config.temperature,
-            "max_tokens": config.max_tokens,
             "top_p": config.top_p,
             "stop": list(config.stop_sequences),
             "stream": True,
             "stream_options": {"include_usage": True},
         }
+        # Only include max_tokens if explicitly set (> 0)
+        if config.max_tokens > 0:
+            payload["max_tokens"] = config.max_tokens
         if tools:
             payload["tools"] = [self._convert_tool(tool) for tool in tools]
         if response_format:
