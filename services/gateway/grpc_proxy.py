@@ -8,6 +8,7 @@ Maintains Protocol Buffer efficiency by forwarding binary data.
 from typing import Dict, Optional
 import grpc
 
+from proto import models_pb2_grpc
 from proto import sessions_pb2_grpc
 from services.gateway.registry import ServiceRegistry
 
@@ -25,6 +26,7 @@ class GenericProxy:
         # Map service names to their stub factories
         self._stub_factories: Dict[str, callable] = {
             "sessions": lambda channel: sessions_pb2_grpc.SessionServiceStub(channel),
+            "models": lambda channel: models_pb2_grpc.ModelServiceStub(channel),
         }
     
     def _extract_target_service(self, context) -> Optional[str]:
@@ -43,8 +45,20 @@ class GenericProxy:
             method = getattr(stub, method_name)
             response = method(request)
             
-            channel.close()
-            return response
+            # Check if response is streaming (iterator/generator)
+            if hasattr(response, '__iter__') and not isinstance(response, (str, bytes)):
+                # For streaming responses, yield from the iterator
+                # and close channel when done
+                def stream_with_cleanup():
+                    try:
+                        yield from response
+                    finally:
+                        channel.close()
+                return stream_with_cleanup()
+            else:
+                # For unary responses, close immediately
+                channel.close()
+                return response
             
         except grpc.RpcError as e:
             context.set_code(e.code())
@@ -127,6 +141,18 @@ class SessionServiceProxy(GenericServiceProxy, sessions_pb2_grpc.SessionServiceS
     
     Inherits from GenericServiceProxy (automatic forwarding) and
     SessionServiceServicer (gRPC interface requirement).
+    
+    All methods automatically forwarded - no manual implementation needed!
+    """
+    pass
+
+
+class ModelServiceProxy(GenericServiceProxy, models_pb2_grpc.ModelServiceServicer):
+    """
+    Proxy handler for Model Service.
+    
+    Inherits from GenericServiceProxy (automatic forwarding) and
+    ModelServiceServicer (gRPC interface requirement).
     
     All methods automatically forwarded - no manual implementation needed!
     """

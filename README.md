@@ -1,75 +1,96 @@
 # GenAI Platform
 
-A platform for building production-ready GenAI applications. This codebase accompanies the book on building GenAI platforms.
+Production-ready platform for building GenAI applications with multi-provider support. Accompanies the book on building GenAI platforms.
 
-## Architecture
+## Features
 
-The platform provides a service-oriented architecture with:
-- **SDK**: Python SDK for building AI workflows
-- **Services**: Session, Model, Data, Guardrails, Tool, Evaluation, and Workflow services
-- **API Gateway**: Unified entry point for external and internal communication
-- **Protocol**: gRPC for internal service communication, HTTP for external clients
+- **Multi-provider inference**: OpenAI, Anthropic (with streaming)
+- **Session management**: Conversation history
+- **Model discovery**: Query capabilities, register custom models
+- **Prompt registry**: Centralized system prompt management
+- **Service architecture**: gRPC services with unified API Gateway
 
-## Installation
+## Setup
 
 ```bash
+# 1. Install
 pip install -e .
-```
 
-For development:
-```bash
-pip install -e ".[dev]"
+# 2. Configure API keys (create .env file)
+echo "OPENAI_API_KEY=your-key" > .env
+echo "ANTHROPIC_API_KEY=your-key" >> .env
+
+# 3. Generate Protocol Buffer code
+python -m proto.generate
 ```
 
 ## Quick Start
 
-### 1. Install Dependencies
-
+**Model Service:**
 ```bash
-pip install -e ".[dev]"
+# Quick demo - OpenAI & Anthropic chat/streaming
+python examples/quickstart_models.py
+
+# Full test - discovery, prompts, custom models
+python examples/test_model_service.py
 ```
 
-### 2. Generate Protocol Buffer Code
-
-The SDK uses Protocol Buffers for service communication. Generate the Python code:
-
+**Session Service:**
 ```bash
-python -m proto.generate
+python examples/quickstart_session_service.py
 ```
 
-This creates `*_pb2.py` and `*_pb2_grpc.py` files from the `.proto` definitions.
-
-### 3. Try the Example Workflow
-
+**Run services separately** (optional):
 ```bash
-python examples/simple_workflow.py
+python -m services.sessions.main  # Terminal 1
+python -m services.models.main    # Terminal 2
+python -m services.gateway.main   # Terminal 3
 ```
 
-## Project Structure
+## Usage
+
+```python
+from genai_platform import GenAIPlatform
+from proto import models_pb2
+
+platform = GenAIPlatform()
+
+# Basic chat
+request = models_pb2.ChatRequest(
+    model="gpt-4o",
+    messages=[models_pb2.ChatMessage(role="user", content="Hello!")],
+)
+response = platform.models.chat(request)
+
+# Streaming
+for chunk in platform.models.chat_stream(request):
+    print(chunk.token, end="", flush=True)
+
+# Model discovery
+models = platform.models.list_models()
+```
+
+## Supported Models
+
+**OpenAI**: `gpt-4o`, `gpt-4o-mini`  
+**Anthropic**: `claude-sonnet-4-5`, `claude-opus-4-5`, `claude-opus-4-1`, `claude-haiku-4-5`
+
+## Architecture
 
 ```
 genai_platform/
-├── genai_platform/          # SDK package
-│   ├── __init__.py
-│   ├── platform.py          # GenAIPlatform class
-│   ├── workflow.py          # @workflow decorator
-│   └── clients/             # Service clients
-│       ├── base.py
-│       ├── sessions.py
-│       ├── models.py
-│       ├── data.py
-│       ├── guardrails.py
-│       ├── tools.py
-│       └── evaluation.py
-├── proto/                   # Protocol Buffer definitions (shared)
-│   ├── sessions.proto
-│   └── generate.py
-├── services/                # Backend services
-│   ├── gateway/             # API Gateway
-│   └── sessions/            # Session Service
-└── examples/                # Example workflows
+├── genai_platform/     # SDK
+│   └── clients/        # Service clients (sessions, models)
+├── proto/              # Protocol Buffer definitions
+├── services/
+│   ├── gateway/        # API Gateway
+│   ├── sessions/       # Session Service
+│   └── models/         # Model Service
+│       └── providers/  # OpenAI, Anthropic adapters
+└── examples/           # Demo scripts
 ```
 
-## Development
+## Status
 
-This is a work in progress. The SDK foundation is implemented, with service implementations coming in subsequent chapters.
+✅ Session Service, Model Service (OpenAI, Anthropic), API Gateway  
+🚧 Data, Guardrails, Tool, Evaluation services (coming soon)
